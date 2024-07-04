@@ -12,12 +12,11 @@ call :printLineBreak
 call :getModInfo
 call :getModRegistry
 
-if defined installPath (
+if exist "%installPath%\" (
 	echo(
-	echo Previous working path detected 
-	echo *You can change the folder path by choosing option 4
+	echo Previous install path detected, reusing it to save your time 
+	echo *You can reset the install path by choosing option 4
 	call :setCompletePath "%installPath%"
-	rem There needs to be a check to make sure install path from registry points to an existing folder 
 	Goto selection
 ) else (
 	echo(
@@ -73,7 +72,6 @@ if %found% EQU 0 (
 	echo Correct Path Example: X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel
 	echo(
 	echo Installation aborted
-	set "initialPath="
 	@pause
 	Goto :EOF
 )
@@ -163,7 +161,7 @@ Goto start
 
 :delRegistry
 reg delete HKCU\Software\BTCafeMod /f
-echo Registry deleted, please run the script again and input the new path...
+echo Install path reset, please run the script again and input the new path...
 @pause
 EXIT /B
 
