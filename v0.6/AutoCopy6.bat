@@ -12,10 +12,12 @@ call :printLineBreak
 call :getModInfo
 call :getModRegistry
 
-if exist "%installPath%\" (
+if exist "%installPath%" (
 	echo(
+	echo Saved Path: %installPath%
 	echo Previous install path detected, reusing it to save your time 
 	echo *You can reset the install path by choosing option 4
+	echo(
 	call :setCompletePath "%installPath%"
 	Goto selection
 ) else (
@@ -48,12 +50,13 @@ rem When user have multiple account make them choose which folder to be installe
 if %found% GTR 1 (
 	call :printLineBreak
 	echo Account List
+	echo(
 	for /D %%G in ("%initialPath%\LocalData\*") do (
 		call :checkDir "%%G"
 	)
 	echo(
 	echo Multiple Steam account detected, please copy the full path of one of the above folder
-	echo Example - X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel\abcd123
+	echo Example: X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel\LocalData\abcd123
 	echo(
 	echo * Without the "" 
 	echo(
@@ -62,6 +65,7 @@ if %found% GTR 1 (
 
 rem Warn user when the path provided is incorrect
 if %found% EQU 0 (
+	cls
 	call :printLineBreak
 	echo WARNING - No Master Duel installation found on the provided path, make sure you enter the correct one. 
 	echo(
@@ -105,17 +109,18 @@ If Errorlevel 2 Goto 2
 If Errorlevel 1 Goto 1
 
 :4
+cls
 call :delRegistry
 Goto :EOF
 
 :3
 cls
 call :printLineBreak
-call(
-call(
+echo(
+echo(
 echo Trying to exit... press 3 again if this window still up
-call(
-call(
+echo(
+echo(
 call :printLineBreak
 Goto :EOF
 
@@ -151,24 +156,30 @@ if %Errorlevel% EQU 0 (
 	for /f "tokens=2,*" %%A in ('reg query "HKCU\Software\BTCafeMod" /v installPath ^| find "LocalData"') do (
 	    set "installPath=%%B"
 	)	
-) 
+) else (
+	echo No Registry Path Detected
+)
 EXIT /B
 
 :setRegistryManual
 set /p "newInstallPath=Enter Your New Install Path: "
 call :printLineBreak
+echo(
 reg add HKCU\Software\BTCafeMod /v installPath /d "%newInstallPath%"\0000 /f 
-echo New Install Path: %newInstallPath%
-echo Correct Example - X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel\abcd123
+echo Your Install Path: %newInstallPath%
+echo Correct Example: X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel\LocalData\abcd123
+echo(
 call :printLineBreak
-echo The script will restart now...	
-echo If it still ask for new path then you enter it incorrectly!
+echo New install path inputted, please exit and run the script again to install the mod
+echo(
+echo If it still ask for new path then you enter it INCORRECTLY!
+echo(
 @pause
-Goto start
+Goto :EOF
 
 :delRegistry
 reg delete HKCU\Software\BTCafeMod /f
-echo Install path reset, please run the script again and input the new path...
+echo Install path reset, please exit and run the script again to input the new path...
 @pause
 EXIT /B
 
@@ -191,7 +202,7 @@ EXIT /B
 	echo modDescription=%modDescription%
 	echo modInstalled=%modInstalled%
 ) > ModStatus.ini
-echo Registry Path - "%completePath%"
+echo Registry Path: "%completePath%"
 call :printLineBreak
 EXIT /B
 
