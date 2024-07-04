@@ -109,7 +109,14 @@ call :delRegistry
 Goto :EOF
 
 :3
+cls
+call :printLineBreak
+call(
+call(
 echo Trying to exit... press 3 again if this window still up
+call(
+call(
+call :printLineBreak
 Goto :EOF
 
 :2
