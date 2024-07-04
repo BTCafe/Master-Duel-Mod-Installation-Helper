@@ -163,6 +163,7 @@ EXIT /B
 
 :setRegistryManual
 set /p "newInstallPath=Enter Your New Install Path: "
+cls
 call :printLineBreak
 echo(
 reg add HKCU\Software\BTCafeMod /v installPath /d "%newInstallPath%"\0000 /f 
@@ -178,6 +179,7 @@ echo(
 Goto :EOF
 
 :delRegistry
+cls
 reg delete HKCU\Software\BTCafeMod /f
 echo Install path reset, please exit and run the script again to input the new path...
 @pause
