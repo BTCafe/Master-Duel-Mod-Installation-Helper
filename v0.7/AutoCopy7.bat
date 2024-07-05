@@ -45,9 +45,12 @@ for /D %%G in ("%initialPath%\LocalData\*") do (
 	set folderID=%%~nxG
 	set /a found+=1
 )
-set checkingPath="%initialPath%\LocalData\%folderID%\0000" 
-call :setCompletePath "%checkingPath%"
 echo( 
+
+if %found% EQU 1 (
+	call :setCompletePath "%initialPath%\LocalData\%folderID%\0000"
+	call :setRegistryAuto "%completePath%"
+)
 
 rem When user have multiple account make them choose which folder to be installed 
 if %found% GTR 1 (
@@ -199,6 +202,20 @@ call :printLineBreak
 echo New install path inputted, please exit and run the script again to install the mod
 echo(
 echo If it still ask for new path then you enter it INCORRECTLY!
+echo(
+@pause
+EXIT
+
+:setRegistryAuto
+cls
+call :printLineBreak
+echo(
+reg add "HKCU\Software\BTCafeMod" /v installPath /d %completePath% /f 
+echo Your Install Path: "%completePath%"
+echo Correct Example: X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel\LocalData\abcd123
+echo(
+call :printLineBreak
+echo Found the install folder, please exit and run the script again to install the mod
 echo(
 @pause
 EXIT
