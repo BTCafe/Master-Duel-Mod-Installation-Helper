@@ -7,6 +7,7 @@ echo Auto Copy Master Duel Mod 0.7 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
+echo GitHub page - https://github.com/BTCafe/Master-Duel-Mod-Installation-Helper
 call :printLineBreak
 
 call :getModInfo
