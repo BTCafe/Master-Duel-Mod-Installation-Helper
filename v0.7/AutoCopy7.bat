@@ -3,7 +3,7 @@
 :start
 cls
 call :printLineBreak
-echo Auto Copy Master Duel Mod 0.6 by BTC
+echo Auto Copy Master Duel Mod 0.7 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
@@ -125,17 +125,41 @@ call :printLineBreak
 Goto :EOF
 
 :2
+call :checkFolderStructure "Original"
 robocopy .\Original\ %completePath% /s /e /is /NFL /NDL /NJH /nc /ns /np 
 set modInstalled=false 
 echo Original version restored
 Goto end
 
 :1
+call :checkFolderStructure "Modded"
 robocopy .\Modded\ %completePath% /s /e /is /NFL /NDL /NJH /nc /ns /np 
 set modInstalled=true
 echo Mod installed
 Goto end
 
+:checkFolderStructure
+set /a statusStructure=1
+dir /a-d "%1\*" >nul 2>nul && (
+		rem echo File outside of folder, proceed to make folder for each
+ 	set /a statusStructure=0) || (
+ 		rem echo No file found, proceed as normal
+ 	)
+
+if %statusStructure% EQU 0 (
+	for %%G in (".\%1\*") do (
+			set charactersFolder=%%~nxG
+			call :repairFolder "%charactersFolder%" %1  
+	)
+)
+rem echo %statusStructure%
+EXIT /B
+
+:repairFolder
+rem Make a new folder based on the first two character of the file and then move those file inside it 
+MD ".\%2\%charactersFolder:~0,2%"
+move ".\%2\%charactersFolder%" ".\%2\%charactersFolder:~0,2%" >nul
+EXIT /B
 
 :getModInfo
 if exist ModStatus.ini ( 
