@@ -78,7 +78,7 @@ if %found% EQU 0 (
 	echo(
 	echo Installation aborted
 	@pause
-	Goto :EOF
+	EXIT
 )
 
 :selection
@@ -112,7 +112,7 @@ If Errorlevel 1 Goto 1
 :4
 cls
 call :delRegistry
-Goto :EOF
+EXIT
 
 :3
 cls
@@ -123,7 +123,7 @@ echo Trying to exit... press 3 again if this window still up
 echo(
 echo(
 call :printLineBreak
-Goto :EOF
+EXIT
 
 :2
 call :checkFolderStructure "Original"
@@ -201,7 +201,7 @@ echo(
 echo If it still ask for new path then you enter it INCORRECTLY!
 echo(
 @pause
-Goto :EOF
+EXIT
 
 :delRegistry
 cls
