@@ -31,8 +31,9 @@ if exist "%installPath%" (
 	echo *On Steam 'right-click Master Duel icon - Manage - Browse Local Files' and then copy the address from File Manager
 	echo *Video guide - https://www.youtube.com/watch?v=Ay0fdOYRBtE  
 	echo(
-	echo *WARNING - If your Master Duel is located in Program Files x86 then you cannot install using this script.
-	echo You need to install it manually until I found out how to fix it 
+	echo *WARNING - If your Master Duel is located inside ^(Program Files x86^) then you need to move it somewhere else
+	echo before using this script. Weird things happen when dealing with PATH that includes ^(  ^) .... 
+	echo Here's how to do that - https://help.steampowered.com/en/faqs/view/4BD4-4528-6B2E-8327
 	echo(
 	call :setInitialPath
 	echo(
