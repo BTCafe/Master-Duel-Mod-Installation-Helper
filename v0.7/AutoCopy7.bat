@@ -3,7 +3,7 @@
 :start
 cls
 call :printLineBreak
-echo Auto Copy Master Duel Mod 0.7 by BTC
+echo Auto Copy Master Duel Mod 0.7.2 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
@@ -34,17 +34,12 @@ if exist "%installPath%" (
 	echo *WARNING - If your Master Duel is located in Program Files x86 then you cannot install using this script.
 	echo You need to install it manually until I found out how to fix it 
 	echo(
-	call :inputPath
+	call :setInitialPath
 	echo(
 )
 
 rem Checking how many account user have
-set folderID=1234
-set /a found=0
-for /D %%G in ("%initialPath%\LocalData\*") do (
-	set folderID=%%~nxG
-	set /a found+=1
-)
+call :checkSteamAccount "%initialPath%"
 echo( 
 
 if %found% EQU 1 (
@@ -78,7 +73,7 @@ if %found% EQU 0 (
 	echo Check this video to see the correct way of obtaining it
 	echo https://www.youtube.com/watch?v=Ay0fdOYRBtE
 	echo(
-	echo Path Provided: %completePath%
+	echo Path Provided: %initialPath%
 	echo Correct Path Example: X:\SteamLibrary\steamapps\common\Yu-Gi-Oh!  Master Duel
 	echo(
 	echo Installation aborted
@@ -90,11 +85,7 @@ if %found% EQU 0 (
 call :printLineBreak
 echo(
 echo Mod Description: %modDescription%
-
-if /i %modInstalled% EQU true (echo Mod Installed: TRUE)
-if /i %modInstalled% EQU false (echo Mod Installed: FALSE)
-if /i %modInstalled% EQU unknown (echo Mod Installed: UNKNOWN)
-
+echo Mod Install Status: %modInstalled%
 echo(
 call :printLineBreak
 echo Please select what you want to do
@@ -141,6 +132,15 @@ robocopy .\Modded\ %completePath% /s /e /is /NFL /NDL /NJH /nc /ns /np
 set modInstalled=true
 echo Mod installed
 Goto end
+
+:checkSteamAccount
+set folderID=1234
+set /a found=0
+for /D %%G in ("%1\LocalData\*") do (
+	set folderID=%%~nxG
+	set /a found+=1
+)
+EXIT /B
 
 :checkFolderStructure
 set /a statusStructure=1
@@ -231,13 +231,13 @@ EXIT /B
 set completePath=%1
 EXIT /B
 
-:inputPath
+:setInitialPath
 set /p "initialPath=Enter Your Install Path: "
 
 :: Check if the input is empty
 if "%initialPath%"=="" (
     echo The path cannot be empty.
-    goto inputPath
+    goto setInitialPath
 )
 EXIT /B
 
