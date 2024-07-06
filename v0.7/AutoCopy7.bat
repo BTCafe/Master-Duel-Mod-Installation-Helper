@@ -3,7 +3,7 @@
 :start
 cls
 call :printLineBreak
-echo Auto Copy Master Duel Mod 0.7 by BTC
+echo Auto Copy Master Duel Mod 0.7.2 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
@@ -35,7 +35,7 @@ if exist "%installPath%" (
 	echo before using this script. Weird things happen when dealing with PATH that includes ^(  ^) .... 
 	echo Here's how to do that - https://help.steampowered.com/en/faqs/view/4BD4-4528-6B2E-8327
 	echo(
-	call :inputPath
+	call :setInitialPath
 	echo(
 )
 
@@ -91,11 +91,7 @@ if %found% EQU 0 (
 call :printLineBreak
 echo(
 echo Mod Description: %modDescription%
-
-if /i %modInstalled% EQU true (echo Mod Installed: TRUE)
-if /i %modInstalled% EQU false (echo Mod Installed: FALSE)
-if /i %modInstalled% EQU unknown (echo Mod Installed: UNKNOWN)
-
+echo Mod Installed: %modInstalled%
 echo(
 call :printLineBreak
 echo Please select what you want to do
@@ -232,13 +228,13 @@ EXIT /B
 set completePath=%1
 EXIT /B
 
-:inputPath
+:setInitialPath
 set /p "initialPath=Enter Your Install Path: "
 
 :: Check if the input is empty
 if "%initialPath%"=="" (
     echo The path cannot be empty.
-    goto inputPath
+    goto setInitialPath
 )
 EXIT /B
 
