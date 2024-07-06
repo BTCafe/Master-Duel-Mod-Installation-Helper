@@ -186,7 +186,7 @@ if %Errorlevel% EQU 0 (
 	    set "installPath=%%B"
 	)	
 ) else (
-	echo No Registry Path Detected
+	echo No Previous Working Path Detected
 )
 EXIT /B
 
