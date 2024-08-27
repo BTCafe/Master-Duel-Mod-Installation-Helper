@@ -3,7 +3,7 @@
 :start
 cls
 call :printLineBreak
-echo Auto Copy Master Duel Mod 0.7.2 by BTC
+echo Auto Copy Master Duel Mod 0.7.3 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
@@ -239,6 +239,11 @@ if "%initialPath%"=="" (
 EXIT /B
 
 :updateStatus
+:: Recreate ModStatus to make sure it has correct permission
+if exist "ModStatus.ini" (
+	del "ModStatus.ini"
+)
+
 (
 	echo modDescription=%modDescription%
 	echo modInstalled=%modInstalled%
