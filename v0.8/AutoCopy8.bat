@@ -206,12 +206,12 @@ if not exist "%backupUnityFile%" (
 	echo Backup created
 	call :printLineBreak
 )
-if exist ".\masterduel_Data" (
+if exist ".\masterduel_Data\data.unity3d" (
 	robocopy .\masterduel_Data %unityPath% data.unity3d /s /e /is /NFL /NDL /NJH /nc /ns /np 
 	set modInstalled=true
 	echo Mod installed
 ) else (
-	echo No modded folder found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
+	echo No modded folder/file found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
 )
 Goto end
 
