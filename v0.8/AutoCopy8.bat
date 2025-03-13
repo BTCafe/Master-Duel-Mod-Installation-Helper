@@ -22,7 +22,12 @@ if exist "%installPath%" (
 	echo *You can reset the install path by choosing option 4
 	echo(
 	call :setCompletePath "%installPath%"
-	Goto selection
+	if exist ".\masterduel_Data" (
+		rem This means we're modding Unity3d
+		Goto selectionUnity
+	) else (
+		Goto selection
+	)
 ) else (
 	echo(
 	echo Please enter the install folder of your Master Duel
@@ -162,6 +167,65 @@ MD ".\%2\%charactersFolder:~0,2%" >nul
 move ".\%2\%charactersFolder%" ".\%2\%charactersFolder:~0,2%" >nul
 EXIT /B
 
+:selectionUnity
+call :printLineBreak
+echo(
+echo Mod Description: %modDescription%
+echo Mod Installed: %modInstalled%
+echo(
+call :printLineBreak
+echo Please select what you want to do
+echo 1) Install Unity Mod
+echo 2) Revert to Original Unity 
+echo 3) Exit 
+echo 4) Reset Install Folder
+echo(
+echo Mod will be installed in: %completePath%
+call :printLineBreak
+echo If the game doesn't start, you can manually download the original Unity file from this link
+echo https://drive.google.com/drive/folders/1WAk4M1Iz8Br0DX2I9bglHmrXqRwIJvXj?usp=drive_link
+call :printLineBreak
+CHOICE /M Select /C 1234 
+echo(
+call :printLineBreak
+
+If Errorlevel 4 Goto 4
+If Errorlevel 3 Goto 3
+If Errorlevel 2 Goto 6
+If Errorlevel 1 Goto 5
+
+:6
+call :setUnityPath
+set originalUnity=%currentUnityFile%
+if exist "%backupUnityFile%" (
+	del "%currentUnityFile%"
+	copy "%backupUnityFile%" "%originalUnity%"
+) else (
+	echo No backup file detected, you might need to download it manually from this link
+	echo https://drive.google.com/drive/folders/1WAk4M1Iz8Br0DX2I9bglHmrXqRwIJvXj?usp=drive_link
+)
+call :printLineBreak
+set modInstalled=false 
+echo Original version restored
+Goto end
+
+:5
+call :setUnityPath
+if not exist "%backupUnityFile%" (
+	call :printLineBreak
+	copy "%currentUnityFile%" "%backupUnityFile%"
+	echo Backup created
+	call :printLineBreak
+)
+if exist ".\masterduel_Data" (
+	robocopy .\masterduel_Data %unityPath% data.unity3d /s /e /is /NFL /NDL /NJH /nc /ns /np 
+	set modInstalled=true
+	echo Mod installed
+) else (
+	echo No modded folder found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
+)
+Goto end
+
 :getModInfo
 if exist ModStatus.ini ( 
 	for /f "delims== tokens=1,2" %%G in (ModStatus.ini) do (
@@ -258,6 +322,16 @@ EXIT /B
 
 :printLineBreak
 echo =============================================================================================================
+EXIT /B
+
+:setUnityPath
+rem Removes the last 15 character so we return to the two folders above
+set basePath=%completePath:~0,-25%
+set unityPath=%basePath%\masterduel_Data"
+
+rem ~1,-1 is used here to remove the double quote so we can add the file we want to change
+set currentUnityFile=%unityPath:~1,-1%\data.unity3d
+set backupUnityFile=%unityPath:~1,-1%\data.unity3d.og
 EXIT /B
 
 :end
