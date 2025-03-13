@@ -10,10 +10,10 @@ echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
 echo GitHub page - https://github.com/BTCafe/Master-Duel-Mod-Installation-Helper
 call :printLineBreak
 
-call :getModInfo
+rem call :getModInfo
 call :getModRegistry
-call :checkFolderStructure "Modded"
-call :checkFolderStructure "Original"
+if exist ".\Modded" (call :checkFolderStructure "Modded")
+if exist ".\Original" (call :checkFolderStructure "Original")
 
 if exist "%installPath%" (
 	echo(
@@ -262,7 +262,7 @@ EXIT /B
 
 :end
 call :printLineBreak
-call :updateStatus
+rem call :updateStatus
 echo(
 @pause
 Goto :start
