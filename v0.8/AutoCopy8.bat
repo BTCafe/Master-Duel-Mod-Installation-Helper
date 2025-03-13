@@ -3,14 +3,13 @@
 :start
 cls
 call :printLineBreak
-echo Auto Copy Master Duel Mod 0.7.3 by BTC
+echo Auto Copy Master Duel Mod 0.8 by BTC
 call :printLineBreak
 echo This is a simple script to automate the install process of Master Duel mods
 echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
 echo GitHub page - https://github.com/BTCafe/Master-Duel-Mod-Installation-Helper
 call :printLineBreak
 
-rem call :getModInfo
 call :getModRegistry
 if exist ".\Modded" (call :checkFolderStructure "Modded")
 if exist ".\Original" (call :checkFolderStructure "Original")
@@ -94,11 +93,6 @@ if %found% EQU 0 (
 
 :selection
 call :printLineBreak
-echo(
-echo Mod Description: %modDescription%
-echo Mod Installed: %modInstalled%
-echo(
-call :printLineBreak
 echo Please select what you want to do
 echo 1) Install the Mod
 echo 2) Revert to Original version 
@@ -169,11 +163,6 @@ EXIT /B
 
 :selectionUnity
 call :printLineBreak
-echo(
-echo Mod Description: %modDescription%
-echo Mod Installed: %modInstalled%
-echo(
-call :printLineBreak
 echo Please select what you want to do
 echo 1) Install Unity Mod
 echo 2) Revert to Original Unity 
@@ -225,17 +214,6 @@ if exist ".\masterduel_Data" (
 	echo No modded folder found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
 )
 Goto end
-
-:getModInfo
-if exist ModStatus.ini ( 
-	for /f "delims== tokens=1,2" %%G in (ModStatus.ini) do (
-		set %%G=%%H
-	)
-) else (
-	set modDescription=No info
-	set modInstalled=unknown
-)
-EXIT /B
 
 :getModRegistry
 :: Check if install path exist in registry
@@ -302,20 +280,6 @@ if "%initialPath%"=="" (
 )
 EXIT /B
 
-:updateStatus
-:: Recreate ModStatus to make sure it has correct permission
-if exist "ModStatus.ini" (
-	del "ModStatus.ini"
-)
-
-(
-	echo modDescription=%modDescription%
-	echo modInstalled=%modInstalled%
-) > ModStatus.ini
-echo Registry Path: "%completePath%"
-call :printLineBreak
-EXIT /B
-
 :checkDir
 echo %1
 EXIT /B
@@ -336,7 +300,6 @@ EXIT /B
 
 :end
 call :printLineBreak
-rem call :updateStatus
 echo(
 @pause
 Goto :start
