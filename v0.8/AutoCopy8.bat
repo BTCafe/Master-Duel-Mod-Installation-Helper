@@ -10,7 +10,6 @@ echo Check for update here - https://www.nexusmods.com/yugiohmasterduel/mods/283
 echo GitHub page - https://github.com/BTCafe/Master-Duel-Mod-Installation-Helper
 call :printLineBreak
 
-rem call :getModInfo
 call :getModRegistry
 if exist ".\Modded" (call :checkFolderStructure "Modded")
 if exist ".\Original" (call :checkFolderStructure "Original")
@@ -36,10 +35,11 @@ if exist "%installPath%" (
 	echo *On Steam 'right-click Master Duel icon - Manage - Browse Local Files' and then copy the address from File Manager
 	echo *Video guide - https://www.youtube.com/watch?v=Ay0fdOYRBtE  
 	echo(
-	echo *WARNING - If your Master Duel is located in Program Files x86 then you cannot install using this script.
-	echo You need to install it manually until I found out how to fix it 
+	echo *WARNING - If your Master Duel is located inside ^(Program Files x86^) then you need to move it somewhere else
+	echo before using this script. Weird things happen when dealing with PATH that includes ^(  ^) .... 
+	echo Here's how to do that - https://help.steampowered.com/en/faqs/view/4BD4-4528-6B2E-8327
 	echo(
-	call :inputPath
+	call :setInitialPath
 	echo(
 )
 
@@ -92,15 +92,6 @@ if %found% EQU 0 (
 )
 
 :selection
-call :printLineBreak
-echo(
-echo Mod Description: %modDescription%
-
-if /i %modInstalled% EQU true (echo Mod Installed: TRUE)
-if /i %modInstalled% EQU false (echo Mod Installed: FALSE)
-if /i %modInstalled% EQU unknown (echo Mod Installed: UNKNOWN)
-
-echo(
 call :printLineBreak
 echo Please select what you want to do
 echo 1) Install the Mod
@@ -172,11 +163,6 @@ EXIT /B
 
 :selectionUnity
 call :printLineBreak
-echo(
-echo Mod Description: %modDescription%
-echo Mod Installed: %modInstalled%
-echo(
-call :printLineBreak
 echo Please select what you want to do
 echo 1) Install Unity Mod
 echo 2) Revert to Original Unity 
@@ -220,25 +206,14 @@ if not exist "%backupUnityFile%" (
 	echo Backup created
 	call :printLineBreak
 )
-if exist ".\masterduel_Data" (
+if exist ".\masterduel_Data\data.unity3d" (
 	robocopy .\masterduel_Data %unityPath% data.unity3d /s /e /is /NFL /NDL /NJH /nc /ns /np 
 	set modInstalled=true
 	echo Mod installed
 ) else (
-	echo No modded folder found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
+	echo No modded folder/file found, make sure there's masterduel_Data folder containing the modded data.unity3d in it
 )
 Goto end
-
-:getModInfo
-if exist ModStatus.ini ( 
-	for /f "delims== tokens=1,2" %%G in (ModStatus.ini) do (
-		set %%G=%%H
-	)
-) else (
-	set modDescription=No info
-	set modInstalled=unknown
-)
-EXIT /B
 
 :getModRegistry
 :: Check if install path exist in registry
@@ -249,7 +224,7 @@ if %Errorlevel% EQU 0 (
 	    set "installPath=%%B"
 	)	
 ) else (
-	echo No Registry Path Detected
+	echo No Previous Working Path Detected
 )
 EXIT /B
 
@@ -295,27 +270,22 @@ EXIT /B
 set completePath=%1
 EXIT /B
 
-:inputPath
+:setInitialPath
 set /p "initialPath=Enter Your Install Path: "
 
 :: Check if the input is empty
 if "%initialPath%"=="" (
     echo The path cannot be empty.
-    goto inputPath
+    goto setInitialPath
 )
-EXIT /B
-
-:updateStatus
-(
-	echo modDescription=%modDescription%
-	echo modInstalled=%modInstalled%
-) > ModStatus.ini
-echo Registry Path: "%completePath%"
-call :printLineBreak
 EXIT /B
 
 :checkDir
 echo %1
+EXIT /B
+
+:printLineBreak
+echo =============================================================================================================
 EXIT /B
 
 :setUnityPath
@@ -328,13 +298,8 @@ set currentUnityFile=%unityPath:~1,-1%\data.unity3d
 set backupUnityFile=%unityPath:~1,-1%\data.unity3d.og
 EXIT /B
 
-:printLineBreak
-echo =============================================================================================================
-EXIT /B
-
 :end
 call :printLineBreak
-rem call :updateStatus
 echo(
 @pause
 Goto :start
